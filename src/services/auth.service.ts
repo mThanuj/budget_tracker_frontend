@@ -1,5 +1,5 @@
-import axios from "axios";
 import { Response } from "../types/Response";
+import axiosInstance from "./axios.service";
 
 type LoginPayload = {
     token: string;
@@ -10,13 +10,10 @@ export const loginUser = async (
     password: string,
 ): Promise<Response<LoginPayload>> => {
     try {
-        const response = await axios.post(
-            "http://localhost:3000/api/auth/login",
-            {
-                email,
-                password,
-            },
-        );
+        const response = await axiosInstance.post("/auth/login", {
+            email,
+            password,
+        });
 
         if (response.status !== 200) {
             return Response.failure(
@@ -26,7 +23,9 @@ export const loginUser = async (
         }
 
         return Response.success(
-            { token: response.data.token },
+            {
+                token: response.data.token,
+            },
             "Logged in successfully",
         );
     } catch (error) {
